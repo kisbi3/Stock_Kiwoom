@@ -1,0 +1,3 @@
+MainProject.py를 실행할 때에는 일단 'Stock_Kiwoom'directory로 들어가서 아래의 명령어로 실행해야 한다!
+
+C:/Users/kisbi/anaconda3/envs/Stock_Kiwoom/python.exe MainProject.py
