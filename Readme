@@ -1,3 +1,11 @@
 MainProject.py를 실행할 때에는 일단 'Stock_Kiwoom'directory로 들어가서 아래의 명령어로 실행해야 한다!
 
 C:/Users/kisbi/anaconda3/envs/Stock_Kiwoom/python.exe MainProject.py
+
+참고 : Anaconda3 python path
+C:\Users\kisbi\anaconda3\envs\Stock_Kiwoom\python.exe
+
+GUI Designer 위치
+C:\Users\kisbi\anaconda3\Library\bin\designer.exe
+
+블로그에서의 ALBA.ui는 여기에서 'MainWindows.ui'와 동일하다!

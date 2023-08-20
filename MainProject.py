@@ -8,7 +8,7 @@ from kiwoom import Kiwoom           # 키움증권 함수/공용 방 (Singleton)
 
 #---------- 프로그램 실행 ----------#
 
-form_class = uic.loadUiType("main_windows.ui")[0]             # 만들어 놓은 ui 불러오기
+form_class = uic.loadUiType("MainWindows.ui")[0]             # 만들어 놓은 ui 불러오기
 
 class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : PyQt5에서 윈도우 생성시 필요한 함수
 
@@ -28,6 +28,12 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         self.set_signal_slot()                               # 키움로그인을 위한 명령어 전송 시 받는 공간을 미리 생성한다.
         self.signal_login_commConnect()
 
+        # self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "계좌번호", account)
+        # self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "비밀번호", "0000")      # 모의투자 0000
+        # self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "비밀번호입력매체구분", "00")
+        # self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "조회구분", "2")
+        # self.k.kiwoom.dynamicCall("CommRqData(String, String, int String)", "계좌평가잔고내역요청", "opw00018", sPrevNext, self.Acc_Screen)
+
     def setUI(self):
         self.setupUi(self)                # UI 초기값 셋업
     
@@ -43,6 +49,7 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         if errCode == 0:
             print("로그인 성공")
             self.statusbar.showMessage("로그인 성공")
+            self.get_account_info()                             # 함수 get_account_info 실행
         
         elif errCode == 100:
             print("사용자 정보교환 실패")
@@ -51,6 +58,14 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         elif errCode == 102:
             print("버전처리 실패")
         self.login_event_loop.exit()    # 로그인이 완료되면 로그인 창을 닫는다.
+    
+    def get_account_info(self):
+        account_list = self.k.kiwoom.dynamicCall("GetLoginInfo(String)", "ACCNO")        # 특정 정보 요청시 kiwoom.dynamicCall 사용, 요청하는 정보 : "GetLoginInfo(String)", "CCNO"
+
+        for n in account_list.split(';'):
+            self.accComboBox.addItem(n)
+    
+
 
 if __name__=='__main__':             # import된 것들을 실행시키지 않고 __main__에서 실행하는 것만 실행 시킨다.
                                      # 즉 import된 다른 함수의 코드를 이 화면에서 실행시키지 않겠다는 의미이다.
