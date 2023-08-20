@@ -24,6 +24,19 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="call_account">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>20</y>
+      <width>141</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>계좌평가잔고내역 확인</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

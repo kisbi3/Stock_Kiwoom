@@ -5,6 +5,7 @@ from PyQt5.QtCore import *                      # eventloop/스레드를 사용 
 
 #### 부가 기능 수행(일꾼) ####
 from kiwoom import Kiwoom           # 키움증권 함수/공용 방 (Singleton)
+from Qthread_1 import Thread1
 
 #---------- 프로그램 실행 ----------#
 
@@ -27,6 +28,10 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         self.k = Kiwoom()                                    # Kiwoom()을 실행하며 상속 받는다
         self.set_signal_slot()                               # 키움로그인을 위한 명령어 전송 시 받는 공간을 미리 생성한다.
         self.signal_login_commConnect()
+
+        # 이벤트 생성 및 진행
+        self.call_account.clicked.connect(self.c_acc)       # 계좌정보 가져오기
+        # -> MainWindows.ui에서 '계좌평가잔고내역 확인'버튼을 클릭하면 함수 'c_acc' 실행
 
         # self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "계좌번호", account)
         # self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "비밀번호", "0000")      # 모의투자 0000
@@ -64,6 +69,12 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
 
         for n in account_list.split(';'):
             self.accComboBox.addItem(n)
+    
+    def c_acc(self):
+        print("선택 계좌 정보 가져오기")
+        ## 1번 일꾼 실행
+        h1 = Thread1(self)
+        h1.start()
     
 
 
