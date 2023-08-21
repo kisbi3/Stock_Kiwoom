@@ -20,3 +20,14 @@ class Thread1(QThread):
         
         ###### EventLoop
         self.detail_account_info_event_loop = QEventLoop()  # 계좌 이벤트루프
+
+        def getItemList(self):
+            marketList = ["0", "10"]    # 0 : 코스피  10 : 코스닥  3 : ELW  8 : ETF  50 : KONEX  4 :  뮤추얼펀드  5 : 신주인수권  6 : 리츠  9 : 하이얼펀드  30 : K-OTC
+
+            for market in marketList:
+                codeList = self.k.kiwoom.dynamicCall("GetCodeListByMarket(QString)", market).split(";")[:-1]    # 코스피, 코스닥 모든 종목들의 종목번호 불러오기
+
+                for code in codeList:
+                    name = self.k.kiwoom.dynamicCall("GetMasterCodeName(QString)", code)                        # 종목번호 -> 종목명
+                    self.k.All_Stock_Code.update({code: {"종목명": name}})      # self.k에 All_Stock_Code라는 딕셔너리에 종목 코드와 이름 입력
+                                                                                # 앞으로 종목 코드와 이름을 알고 싶으면 All_Stock_Code 딕셔너리에 접근하면 됨.
