@@ -33,11 +33,6 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         self.call_account.clicked.connect(self.c_acc)       # 계좌정보 가져오기
         # -> MainWindows.ui에서 '계좌평가잔고내역 확인'버튼을 클릭하면 함수 'c_acc' 실행
 
-        # self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "계좌번호", account)
-        # self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "비밀번호", "0000")      # 모의투자 0000
-        # self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "비밀번호입력매체구분", "00")
-        # self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "조회구분", "2")
-        # self.k.kiwoom.dynamicCall("CommRqData(String, String, int String)", "계좌평가잔고내역요청", "opw00018", sPrevNext, self.Acc_Screen)
 
     def setUI(self):
         self.setupUi(self)                # UI 초기값 셋업

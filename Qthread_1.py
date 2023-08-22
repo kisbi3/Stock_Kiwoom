@@ -21,6 +21,11 @@ class Thread1(QThread):
         ###### EventLoop
         self.detail_account_info_event_loop = QEventLoop()  # 계좌 이벤트루프
 
+        ##### 계좌정보 가져오기
+        self.getItemList()                      # 종목 이름 받아오기
+        self.detail_account_mystock()           # 계좌평가잔고내역 가져오기
+
+
         def getItemList(self):
             marketList = ["0", "10"]    # 0 : 코스피  10 : 코스닥  3 : ELW  8 : ETF  50 : KONEX  4 :  뮤추얼펀드  5 : 신주인수권  6 : 리츠  9 : 하이얼펀드  30 : K-OTC
 
@@ -31,3 +36,19 @@ class Thread1(QThread):
                     name = self.k.kiwoom.dynamicCall("GetMasterCodeName(QString)", code)                        # 종목번호 -> 종목명
                     self.k.All_Stock_Code.update({code: {"종목명": name}})      # self.k에 All_Stock_Code라는 딕셔너리에 종목 코드와 이름 입력
                                                                                 # 앞으로 종목 코드와 이름을 알고 싶으면 All_Stock_Code 딕셔너리에 접근하면 됨.
+
+        def detail_account_mystock(self, sPrevNext="0"):        # 키움서버에서 조회할 데이터가 30개 이상이면 2, 그 이하면 0을 반환
+
+            print("계좌평가잔고내역 조회")
+            account = self.parent.accComboBox.currentText() # 콤보박스의 계좌번호를 가져오는 부분
+                                                            # parent를 이용하여 부모 GUI에 접근할 수 있는 권한을 할당받음
+            self.account_num = account                      # 파일 Qthread_1 어디에서도 계좌번호를 사용할 수 있도록 self 를 이용해 저장
+            print("최종 선택 계좌는 %s" % self.account_num)
+
+            # dynamicCall 함수를 이용해 키움에 명령 전송
+            self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "계좌번호", account)
+            self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "비밀번호", "0000")      # 모의투자 0000
+            self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "비밀번호입력매체구분", "00")
+            self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "조회구분", "2")
+            self.k.kiwoom.dynamicCall("CommRqData(String, String, int, String)", "계좌평가잔고내역요청", "opw00018", sPrevNext, self.Acc_Screen)
+            self.detail_account_info_event_loop.exec()              # 계좌평가잔고내역요청을 키움 서버로 전송한 후 모든 처리가 완성될 때 까지 다음 코드가 진행되지 않도록 막아주는 이벤트 루프
