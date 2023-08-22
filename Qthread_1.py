@@ -52,3 +52,25 @@ class Thread1(QThread):
             self.k.kiwoom.dynamicCall("SetInputValue(String, String)", "조회구분", "2")
             self.k.kiwoom.dynamicCall("CommRqData(String, String, int, String)", "계좌평가잔고내역요청", "opw00018", sPrevNext, self.Acc_Screen)
             self.detail_account_info_event_loop.exec()              # 계좌평가잔고내역요청을 키움 서버로 전송한 후 모든 처리가 완성될 때 까지 다음 코드가 진행되지 않도록 막아주는 이벤트 루프
+
+        # BSTR sScrNo : 화면번호, BSTR sRQName : 사용자 구분명, BSTR sTrCode : TR이름(종목번호), BSTR sPrevNext : 이전/다음 페이지
+        def trdata_slot(self, sScrNo, sRQName, sTrCode, sRecordName, sPrevNext):
+
+            if sRQName == "계좌평가잔고내역요청":
+
+                column_head = ["종목번호", "종목명", "보유수량", "매입가", "현재가", "평가손익", "수익률(%)"]
+                colCount = len(column_head)
+                rowCount = self.k.kiwoom.dynamicCall("GetRepeatCnt(QString, QString)", sTrCode, sRQName)
+                self.parent.stocklistTableWidget_2.setColumnCount(colCount)                 # 행 갯수
+                self.parent.stocklistTableWidget_2.setRowCount(rowCount)                    # 열 갯수 (종목 수)
+                self.parent.stocklistTableWidget_2.setHorizontalHeaderLabels(column_head)   # 행의 이름 삽입
+
+                self.rowCount = rowCount
+
+                print("계좌에 들어있는 종목 수 %s" % rowCount)
+
+                totalBuyingPrice = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "총매입금액"))
+                currentTotalPrice = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "총평가금액"))
+                balanceAsset = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "추정예탁자산"))
+                totalEstimateProfit = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "총평가손익금액"))
+                total_profit_loss_rate = float(self.k.kiwoom.dynamicCall("GetCommData(String, String, int, String)", sTrCode, sRQName, 0, "총수익률(%)"))
