@@ -74,3 +74,13 @@ class Thread1(QThread):
                 balanceAsset = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "추정예탁자산"))
                 totalEstimateProfit = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "총평가손익금액"))
                 total_profit_loss_rate = float(self.k.kiwoom.dynamicCall("GetCommData(String, String, int, String)", sTrCode, sRQName, 0, "총수익률(%)"))
+
+                #################################### 텍스트 라벨에 집어 넣기
+                
+                self.parent.label_2.setText(str(totalBuyingPrice))
+                self.parent.label_4.setText(str(currentTotalPrice))
+                self.parent.label_6.setText(str(balanceAsset))
+                self.parent.label_8.setText(str(totalEstimateProfit))
+                self.parent.label_10.setText(str(total_profit_loss_rate))
+                
+                #################################################################

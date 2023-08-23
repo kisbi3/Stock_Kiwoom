@@ -20,6 +20,14 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         form_class.__init__(self)                            # 상속 받은 from_class를 실행하기 위한 초기값(초기화)
         self.setUI()                                         # UI 초기값 셋업 반드시 필요
 
+        ### 초기 셋팅
+
+        self.label_1.setText(str("총매입금액"))
+        self.label_3.setText(str("총평가금액"))
+        self.label_5.setText(str("추정예탁자산"))
+        self.label_7.setText(str("총평가손익금액"))
+        self.label_9.setText(str("총수익률(%)"))
+
         # 기타 함수
         self.login_event_loop = QEventLoop()                 # 이때 QEventLoop()는 block 기능을 가지고 있다.
                                                             # 특정 명령이 완료될 때까지 다음 코드들이 실행되는 것을 막아주는 함수
