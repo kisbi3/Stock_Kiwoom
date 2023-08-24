@@ -149,6 +149,16 @@
      </item>
     </layout>
    </widget>
+   <widget class="QTableWidget" name="stocklistTableWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>140</y>
+      <width>371</width>
+      <height>201</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
