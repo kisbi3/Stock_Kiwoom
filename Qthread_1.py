@@ -84,3 +84,46 @@ class Thread1(QThread):
                 self.parent.label_10.setText(str(total_profit_loss_rate))
                 
                 #################################################################
+
+                for index in range(rowCount):
+                    itemCode = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "종목번호").strip(" ").strip("A")
+                    itemName = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "종목명")
+                    amount = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "보유수량"))
+                    buyingPrice = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "매입가"))
+                    currentPrice = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "현재가"))
+                    estimateProfit = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "평가손익"))
+                    profitRate = float(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "수익률(%)"))
+                    total_chegual_price = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "매입금액")
+                    total_chegual_price = int(total_chegual_price.strip())
+                    possible_quantity = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "매매가능수량")
+                    possible_quantity = int(possible_quantity.strip())
+
+                    if itemCode in self.k.acc_portfolio:
+                        pass
+                    else:
+                        self.k.acc_portfolio.update({itemCode:{}})      # self.account_stock_dict[code] = {}
+                    
+                    self.k.acc_portfolio[itemCode].update({"종목명" : itemName.strip()})
+                    self.k.acc_portfolio[itemCode].update({"보유수량" : amount})
+                    self.k.acc_portfolio[itemCode].update({"매입가" : buyingPrice})
+                    self.k.acc_portfolio[itemCode].update({"수익률(%)" : profitRate})
+                    self.k.acc_portfolio[itemCode].update({"현재가" : currentPrice})
+                    self.k.acc_portfolio[itemCode].update({"매입금액" : total_chegual_price})
+                    self.k.acc_portfolio[itemCode].update({"매매가능수량" : possible_quantity})
+
+                    self.parent.stocklistTableWidget_2.setItem(index, 0, QTableWidgetItem(str(itemCode)))
+                    self.parent.stocklistTableWidget_2.setItem(index, 1, QTableWidgetItem(str(itemName)))
+                    self.parent.stocklistTableWidget_2.setItem(index, 2, QTableWidgetItem(str(amount)))
+                    self.parent.stocklistTableWidget_2.setItem(index, 3, QTableWidgetItem(str(buyingPrice)))
+                    self.parent.stocklistTableWidget_2.setItem(index, 4, QTableWidgetItem(str(currentPrice)))
+                    self.parent.stocklistTableWidget_2.setItem(index, 5, QTableWidgetItem(str(estimateProfit)))
+                    self.parent.stocklistTableWidget_2.setItem(index, 6, QTableWidgetItem(str(profitRate)))
+                
+                # sPrevNext == 2 --> 조회할 값이 남아 있는 것
+                # sPrevNext == 0 --> 더 이상 조회할 값이 없는 것
+                if sPrevNext == "2":
+                    self.detail_account_mystock(sPrevNext="2")      #   다음 페이지가 있으면 전부 검색
+                else:
+                    self.detail_account_info_event_loop.exit()      #   그렇지 않으면 event loop를 끊어준다.
+
+
