@@ -6,6 +6,7 @@ from PyQt5.QtCore import *                      # eventloop/스레드를 사용 
 #### 부가 기능 수행(일꾼) ####
 from kiwoom import Kiwoom           # 키움증권 함수/공용 방 (Singleton)
 from Qthread_1 import Thread1
+from Qthread_2 import Thread2
 
 #---------- 프로그램 실행 ----------#
 
@@ -40,6 +41,8 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         # 이벤트 생성 및 진행
         self.call_account.clicked.connect(self.c_acc)       # 계좌정보 가져오기
         # -> MainWindows.ui에서 '계좌평가잔고내역 확인'버튼을 클릭하면 함수 'c_acc' 실행
+        self.acc_manage.clicked.connect(self.a_manage)      # 계좌정보 가져오기
+        # -> MainWindows.ui에서 '계좌 관리'버튼을 클릭하면 함수 'a_manage' 실행
 
 
     def setUI(self):
@@ -78,6 +81,12 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         ## 1번 일꾼 실행
         h1 = Thread1(self)
         h1.start()
+    
+    def a_manage(self):
+        print("계좌 관리")
+        ## 2번 일꾼 실행
+        h2 = Thread2(self)
+        h2.start()
     
 
 

@@ -159,6 +159,29 @@
      </rect>
     </property>
    </widget>
+   <widget class="QPushButton" name="acc_manage">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>20</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>계좌 관리</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="stocklistTableWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>50</y>
+      <width>256</width>
+      <height>291</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
