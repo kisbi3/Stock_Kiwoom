@@ -61,3 +61,35 @@ class Thread2(QThread):
             self.k.kiwoom.dynamicCall("SetInputValue(QString, QString)", "외인추정단가구분", "1")
             self.k.kiwoom.dynamicCall("CommRqData(String, String, int, String)", "종목별기관매매추이요청2", "opt10045", "0", self.Find_down_Screen)
             self.detail_account_info_event_loop.exec_()
+
+
+    def trdata_slot(self, sScrNo, sRQName, sTrCode, sRecordName, sPrevNext):
+
+        if sRQName == "종목별기관매매추이요청2":
+
+            cnt2 = self.k.kiwoom.dynamicCall("GetRepeatCnt(QString, QString)", sTrCode, sRQName)        # 10일치 이상을 하려면 이 부분에 10일치 이상 데이터가 필요
+            # ex) 5/1~5/10일 일 경우 -> "GetRepeatCnt(QString, QString)" 함수는 10을 반환함
+
+            self.calcul2_data = []
+            self.calcul2_data2 = []
+            self.calcul2_data3 = []
+            self.calcul2_data4 = []
+
+            for i in range(cnt2):
+                # 싱글데이터로 특정기간 내의 기관추정평균가/외인추정평균가를 받아옴
+                # 멀티데이터로 기관일별순매매수량/외인일별순매매수량/등락률/종가 데이터를 가져옴
+                Kigwan_meme = (self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "기관일별순매매수량"))
+                Kigwan_meme_ave = (self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "기관추정평균가"))
+                Forgin_meme = (self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "외인일별순매매수량"))
+                Forgin_meme_ave = (self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "외인추정평균가"))
+                percentage = (self.k.kiwoom.dynamicCall("GetCommData(String, String, int, String)", sTrCode, sRQName, i, "등락률"))
+                Jongga = (self.k.kiwoom.dynamicCall("GetCommData(String, String, int, String)", sTrCode, sRQName, i, "종가"))
+
+                self.calcul2_data.append(int(Kigwan_meme.strip()))
+                self.calcul2_data2.append(abs(int(Jongga.strip())))
+                self.calcul2_data2.append(abs(int(Kigwan_meme_ave.strip())))
+                self.calcul2_data2.append(abs(int(Forgin_meme_ave.strip())))
+                self.calcul2_data3.append(int(Forgin_meme.strip()))
+                self.calcul2_data4.append(float(percentage.strip()))
+
+                # 여기까지 code의 기관일별순매수수량, 외국인일별순매수량, 기관/외국인 평균가, 등락률 정보가 나온다.
