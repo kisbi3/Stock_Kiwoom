@@ -172,7 +172,7 @@
      <string>계좌 관리</string>
     </property>
    </widget>
-   <widget class="QTableWidget" name="stocklistTableWidget_3">
+   <widget class="QTableWidget" name="Danger_wd">
     <property name="geometry">
      <rect>
       <x>470</x>

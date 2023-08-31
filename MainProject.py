@@ -6,7 +6,7 @@ from PyQt5.QtCore import *                      # eventloop/스레드를 사용 
 #### 부가 기능 수행(일꾼) ####
 from kiwoom import Kiwoom           # 키움증권 함수/공용 방 (Singleton)
 from Qthread_1 import Thread1
-from Qthread_2 import Thread2
+from Qthread_2 import Thread2       # 계좌 관리
 
 #---------- 프로그램 실행 ----------#
 

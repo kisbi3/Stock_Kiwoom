@@ -24,7 +24,21 @@ class Thread2(QThread):
 
         ###### 기관외국인 평균가 가져오기
         self.C_K_F_class()              # opt10045를 실행할 함수 실행
-    
+
+        ###### 결과 붙이기(GUI)
+        column_head = ["종목코드", "종목명", "위험도"]
+        colCount = len(column_head)
+        rowCount = len(self.k.acc_portfolio)
+        self.parent.Danger_wd.setColumnCount(colCount)                      # 행 갯수
+        self.parent.Danger_wd.setRowCount(rowCount)                         # 행 갯수 (종목 수)
+        self.parent.Danger_wd.setHorizontalHeaderLabels(column_head)        # 행의 이름 삽입
+        index2 = 0
+        for k in self.k.acc_portfolio.keys():
+            self.parent.Danger_wd.setItem(index2, 0, QTableWidgetItem(str(k)))
+            self.parent.Danger_wd.setItem(index2, 1, QTableWidgetItem(self.k.acc_portfolio[k]["종목명"]))
+            self.parent.Danger_wd.setItem(index2, 2, QTableWidgetItem(self.k.acc_portfolio[k]["위험도"]))
+            index2 += 1
+
 
     def C_K_F_class(self):
         code_list = []                      # 계좌에 있는 종목을 불러와 저장하기 위한 장소
@@ -103,7 +117,7 @@ class Thread2(QThread):
                 Kigwan_meme_ave = (self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "기관추정평균가"))
                 Forgin_meme = (self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "외인일별순매매수량"))
                 Forgin_meme_ave = (self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "외인추정평균가"))
-                percentage = (self.k.kiwoom.dynamicCall("GetCommData(String, String, int, String)", sTrCode, sRQName, i, "등락률"))
+                percentage = (self.k.kiwoom.dynamicCall("GetCommData(String, String, int, String)", sTrCode, sRQName, i, "등락율"))
                 Jongga = (self.k.kiwoom.dynamicCall("GetCommData(String, String, int, String)", sTrCode, sRQName, i, "종가"))
 
                 self.calcul2_data.append(int(Kigwan_meme.strip()))
