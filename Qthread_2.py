@@ -35,7 +35,7 @@ class Thread2(QThread):
         self.Invers_arrangement()
 
         ###### 결과 붙이기(GUI)
-        column_head = ["종목코드", "종목명", "위험도"]
+        column_head = ["종목코드", "종목명", "위험도", "역배열"]
         colCount = len(column_head)
         rowCount = len(self.k.acc_portfolio)
         self.parent.Danger_wd.setColumnCount(colCount)                      # 행 갯수
@@ -46,6 +46,7 @@ class Thread2(QThread):
             self.parent.Danger_wd.setItem(index2, 0, QTableWidgetItem(str(k)))
             self.parent.Danger_wd.setItem(index2, 1, QTableWidgetItem(self.k.acc_portfolio[k]["종목명"]))
             self.parent.Danger_wd.setItem(index2, 2, QTableWidgetItem(self.k.acc_portfolio[k]["위험도"]))
+            self.parent.Danger_wd.setItem(index2, 3, QTableWidgetItem(self.k.acc_portfolio[k]["역배열"]))
             index2 += 1
 
 
@@ -117,7 +118,11 @@ class Thread2(QThread):
         print("계좌포함 종목 %s" % (code_list))
 
         for idx, code in enumerate(code_list):
-            QTest.qWait()
+            QTest.qWait(1000)
+            
+            self.code_in_all = code     # 종목코드 선언 (중간에 코드 정보 받아오기 위해서)
+            print("%s 종목 검사 중 코드이름 : %s." % (idx + 1, self.code_in_all))
+
             self.k.kiwoom.dynamicCall("DisconnectRealData(QString)", self.Predic_Screen)               # 해당 스크린 끊고 다시 시작
             self.k.kiwoom.dynamicCall("SetInputValue(QString, QString)", "종목코드", code)
             self.k.kiwoom.dynamicCall("SetInputValue(QString, QString)", "수정주가구분", "1")           # 수정주가구분 0 : 액면분할 등이 포함되지 않음, 1 : 포함됨
@@ -160,7 +165,7 @@ class Thread2(QThread):
 
             self.detail_account_info_event_loop.exit()
 
-        elif sRQName == "주식일봉차트조회":
+        if sRQName == "주식일봉차트조회":
             # GetCommData -> 데이터를 받아오는 함수
             code = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "종목코드")
             code = code.strip()     # 여백 발생 방지
@@ -173,7 +178,7 @@ class Thread2(QThread):
 
             for i in range(cnt):        # [0] ~ [599]
                 data = []
-                current_price = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, '현재가')
+                current_price = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "현재가")
                 value = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "거래량")
                 trading_value = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "거래대금")
                 date = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "일자")
@@ -193,5 +198,41 @@ class Thread2(QThread):
 
                 self.Predic_start.append(int(current_price.strip()))            # 미래를 예측하기 위한 코드인데 강의에서 다루지 않을 예정.
                 self.calcul_data.append(data.copy())            # 리스트로 데이터가 들어간다. -> 레지스터 주소가 중복되지 않게 복사
+                # self.Predic_start -> 600일치의 현재가 포함
+                # self.calcul_data -> 600일치의 고가/저가/현재가 등등이 포함
+
+            if self.calcul_data == None or len(self.calcul_data) < 210:
+                self.k.acc_portfolio[self.code_in_all].update({"역배열" : "데이터 없음"})
+            
+            else:           # 만약 120개의 데이터가 존재한다면
+                total_five_price = []       # 초기화
+                total_twenty_price = []     # 초기화
+                
+                # 5일선, 20일선 데이터 10개씩 계산
+                for k in range(10):
+                    total_five_price.append(sum(self.Predic_start[k: 5 + k]) / 5)
+                
+                for k in range(10):
+                    total_twenty_price.append(sum(self.Predic_start[k: 20 + k]) / 20)
+                
+                add_item = 0
+
+                for k in range(10):
+                    if float(total_five_price[k]) < float(total_twenty_price[k]) and float(self.calcul_data[k][1]) < float(total_twenty_price[k]):
+                        # 5일선 < 20일선 and 현재가 < 20일선 인 경우 add_time에 1씩 더한다.
+                        add_item += 1
+                    else:
+                        pass
+                
+                if add_item >= 8:
+                    self.k.acc_portfolio[self.code_in_all].update({"역배열" : "맞음"})
+                else:
+                    self.k.acc_portfolio[self.code_in_all].update({"역배열" : "아님"})
+                
+            self.calcul_data.clear()        # 코드에 들어있는 일봉 데이터 삭제
+            self.Predic_start.clear()
+
+            self.detail_account_info_event_loop.exit()
+                    
 
 
