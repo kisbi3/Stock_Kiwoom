@@ -108,6 +108,7 @@ class Thread2(QThread):
             self.k.acc_portfolio[self.code_in_all].update({"위험도" : "낮음"})
     
     def Invers_arrangement(self):
+        # "주식일봉차트조회"
         
         code_list = []
         for code in self.k.acc_portfolio.keys():
@@ -158,3 +159,39 @@ class Thread2(QThread):
             self.kigwan_meme_dong2(self.calcul2_data, self.calcul2_data3)
 
             self.detail_account_info_event_loop.exit()
+
+        elif sRQName == "주식일봉차트조회":
+            # GetCommData -> 데이터를 받아오는 함수
+            code = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "종목코드")
+            code = code.strip()     # 여백 발생 방지
+            cnt = self.k.kiwoom.dynamicCall("GetRepeatCnt(QString, QString)", sTrCode, sRQName)
+
+            #print("데이터 일수 %s" % cnt)
+            # 600일치 데이터를 한번에 받아오는 함수 : GetCommDataEx, 리스트로 변환
+            # data = self.dynamicCall("GetCommDataEx(QString, QString)", sTrCode, sRQName)
+            # [[''], '현재가', '거래량', '거래대금', '날짜', '시가', '고가', '저가', ''], [...], [...], ..... ]
+
+            for i in range(cnt):        # [0] ~ [599]
+                data = []
+                current_price = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, '현재가')
+                value = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "거래량")
+                trading_value = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "거래대금")
+                date = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "일자")
+                start_price = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "시가")
+                high_price = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "고가")
+                low_price = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, i, "저가")
+
+                data.append("")     # GetCommDataEx함수의 반환값과 동일하게 하기 위해서!
+                data.append(current_price.strip())
+                data.append(value.strip())
+                data.append(trading_value.strip())
+                data.append(date.strip())
+                data.append(start_price.strip())
+                data.append(high_price.strip())
+                data.append(low_price.strip())
+                data.append("")
+
+                self.Predic_start.append(int(current_price.strip()))            # 미래를 예측하기 위한 코드인데 강의에서 다루지 않을 예정.
+                self.calcul_data.append(data.copy())            # 리스트로 데이터가 들어간다. -> 레지스터 주소가 중복되지 않게 복사
+
+
