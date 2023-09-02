@@ -11,10 +11,16 @@ class Thread2(QThread):
         self.parent = parent            # 부모의 윈도우를 사용하기 위한 조건
 
         self.k = Kiwoom()               # kiwoom 함수 상속
-        ############# 사용되는 변수
+        ############# 기관/외국인 매매동향 가져오기 사용되는 변수
         self.Find_down_Screen = "1200"      # 계좌평가잔고내역을 받기 위한 스크린(50개 까지 가능)
                                             # -> 50개가 넘어가면 스크린 번호를 1201로 바꿔야 함
         self.code_in_all = None             # 1600개 코드 중 1개 코드, 쌓이지 않고 계속 갱신
+
+        ############# 역배열인지 확인하기
+        self.Predic_Screen = "1400"         # 일봉차트를 가져오기 위한 스크린
+        self.calcul_data   = []             # 받아온 종목의 다양한 값(현재가/고가/저기 등) 계산
+        self.second_filter = []             # 역배열인지 확인
+        self.Predic_start  = []             # 미래예측
 
         ###### slot
         self.k.kiwoom.OnReceiveTrData.connect(self.trdata_slot)     # 내가 알고 있는 Tr 슬롯에다가 특정 값을 던져준다.
@@ -24,6 +30,9 @@ class Thread2(QThread):
 
         ###### 기관외국인 평균가 가져오기
         self.C_K_F_class()              # opt10045를 실행할 함수 실행
+
+        ###### 역배열 평가
+        self.Invers_arrangement()
 
         ###### 결과 붙이기(GUI)
         column_head = ["종목코드", "종목명", "위험도"]
@@ -97,6 +106,22 @@ class Thread2(QThread):
         
         else:
             self.k.acc_portfolio[self.code_in_all].update({"위험도" : "낮음"})
+    
+    def Invers_arrangement(self):
+        
+        code_list = []
+        for code in self.k.acc_portfolio.keys():
+            code_list.append(code)
+        
+        print("계좌포함 종목 %s" % (code_list))
+
+        for idx, code in enumerate(code_list):
+            QTest.qWait()
+            self.k.kiwoom.dynamicCall("DisconnectRealData(QString)", self.Predic_Screen)               # 해당 스크린 끊고 다시 시작
+            self.k.kiwoom.dynamicCall("SetInputValue(QString, QString)", "종목코드", code)
+            self.k.kiwoom.dynamicCall("SetInputValue(QString, QString)", "수정주가구분", "1")           # 수정주가구분 0 : 액면분할 등이 포함되지 않음, 1 : 포함됨
+            self.k.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)", "주식일봉차트조회", "opt10081", "0", self.Predic_Screen)
+            self.detail_account_info_event_loop.exec_()
 
     def trdata_slot(self, sScrNo, sRQName, sTrCode, sRecordName, sPrevNext):
 
