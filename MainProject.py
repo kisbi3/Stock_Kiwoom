@@ -44,6 +44,38 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         self.acc_manage.clicked.connect(self.a_manage)      # 계좌정보 가져오기
         # -> MainWindows.ui에서 '계좌 관리'버튼을 클릭하면 함수 'a_manage' 실행
 
+        #################### 부가기능 1 : 종목선택하기, 새로운 종목 추가 및 삭제
+        self.k.kiwoom.OnReceiveTrData.connect(self.trdata_slot)         # 키움서버 데이터 받는 곳
+        self.additemlast.clicked.connect(self.searchItem2)              # 종목 추가
+        # self.searchItem2 -> 자동매매 종목 선정 함수
+        ####################
+
+    def searchItem2(self):              # 종목추가시 사용됨
+        # ------------------------------------------------------------------------
+        # MainWindow 창에서 종목을 넣고 종목 추가를 누르면 종목 코드를 알아오기 위한 부분
+        itemName = self.searchItemTextEdit2.toPlainText()
+        # itemName :입력 종목넣는 곳의 이름이 'searchItemTextEdit2' 이므로 여기에 입력된 종목 값을 받아오기 위해 'toPlainText' 함수 사용
+        if itemName != "":      # itemName이 비어있지 않은 경우 실행
+            for code in self.k.All_Stock_Code.keys():       # self.k.All_Stock_Code.keys()에서 종목을 찾고 종목 코드 가져오기 위함
+                # 주식체결 정보 가져오기(틱 데이터) : 현재가, 전일대비, 등락률, 매도호가, 매수홓가, 거래량, 누적거래량, 고가, 시가, 저가
+                if itemName == self.k.All_Stock_Code[code]['종목명']:
+                    self.new_code = code        # 입력한 종목명의 코드번호 넣기
+        # ------------------------------------------------------------------------
+        # 종목코드번호와 종목명을 Table Widget에 입력하기
+        column_head = ["종목코드", "종목명", "현재가", "신용비율"]
+        colCount= len(column_head)
+        row_count = self.buylast.rowCount()
+
+        self.buylast.setColumnCount(colCount)                   # 행 개수
+        self.buylast.setRowCount(row_count + 1)                 # column_head가 한 행을 사용하기 때문에 +1 해줘야 함
+        self.buylast.setHoizontalHeaderLabels(column_head)      # 행의 이름 삽입
+
+        self.buylast.setItem(row_count, 0, QTableWidgetItem(str(self.new_code)))        # 실제 입력값은 1행부터이나 0부터 들어가야 한다.
+        self.buylast.setItem(row_count, 1, QTableWidgetItem(str(itemName)))
+        # ------------------------------------------------------------------------
+        # getItemInfo 함수를 만들어서 종목 현재가와 신용비율을 가져오려고 함.
+        self.getItemInfo(self.new_code)
+
 
     def setUI(self):
         self.setupUi(self)                # UI 초기값 셋업
