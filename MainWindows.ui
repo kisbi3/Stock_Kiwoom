@@ -192,44 +192,16 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
       <string>자동매매 종목 선정</string>
      </attribute>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>자동매매 조건</string>
-     </attribute>
-     <widget class="QTableWidget" name="buylast">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>341</width>
-        <height>221</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="additemlast">
-      <property name="geometry">
-       <rect>
-        <x>250</x>
-        <y>240</y>
-        <width>91</width>
-        <height>31</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>종목 추가</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="Deletcode">
       <property name="geometry">
        <rect>
-        <x>250</x>
+        <x>240</x>
         <y>280</y>
         <width>91</width>
         <height>31</height>
@@ -242,7 +214,7 @@
      <widget class="QTextEdit" name="searchItemTextEdit2">
       <property name="geometry">
        <rect>
-        <x>100</x>
+        <x>90</x>
         <y>250</y>
         <width>141</width>
         <height>41</height>
@@ -252,7 +224,7 @@
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>20</x>
+        <x>10</x>
         <y>250</y>
         <width>71</width>
         <height>41</height>
@@ -262,6 +234,34 @@
        <string>종목명 입력</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="additemlast">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>240</y>
+        <width>91</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>종목 추가</string>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="buylast">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>10</y>
+        <width>341</width>
+        <height>221</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>자동매매 조건</string>
+     </attribute>
     </widget>
    </widget>
   </widget>

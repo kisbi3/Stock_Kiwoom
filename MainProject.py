@@ -68,13 +68,19 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
 
         self.buylast.setColumnCount(colCount)                   # 행 개수
         self.buylast.setRowCount(row_count + 1)                 # column_head가 한 행을 사용하기 때문에 +1 해줘야 함
-        self.buylast.setHoizontalHeaderLabels(column_head)      # 행의 이름 삽입
+        self.buylast.setHorizontalHeaderLabels(column_head)      # 행의 이름 삽입
 
         self.buylast.setItem(row_count, 0, QTableWidgetItem(str(self.new_code)))        # 실제 입력값은 1행부터이나 0부터 들어가야 한다.
         self.buylast.setItem(row_count, 1, QTableWidgetItem(str(itemName)))
         # ------------------------------------------------------------------------
         # getItemInfo 함수를 만들어서 종목 현재가와 신용비율을 가져오려고 함.
         self.getItemInfo(self.new_code)
+    
+    def getItemInfo(self, new_code):
+        self.k.kiwoom.dynamicCall("SetInputValue(QString, QString)", "종목코드", new_code)
+        self.k.kiwoom.dynamicCall("CommRqData(QString, QString, int, QString)", "주식기본정보요청", "opt10001", 0, "100")
+        # 연속조회가 아닐 경우에 '0', 화면번호 : '100'
+        # CommRqData("RQName", "opt10001", 0, "화면번호")
 
 
     def setUI(self):
@@ -120,6 +126,17 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         h2 = Thread2(self)
         h2.start()
     
+    def trdata_slot(self, sScrNo, sRQName, sTrCode, sRecordName, sPrevNext):
+        if sTrCode == "opt10001":
+            if sRQName == "주식기본정보요청":
+                # 현재가, 신용비율만 가져오기
+                currentPrice = abs(int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "현재가")))
+                D_R = (self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, 0, "신용비율")).strip()
+                row_count = self.buylast.rowCount()
+                # 2열, 3열에 값을 넣어야 함
+                # ex ) 행 6개 -> 0행 ~ 5행 이기 때문에 row_count - 1
+                self.buylast.setItem(row_count - 1, 2, QTableWidgetItem(str(currentPrice)))
+                self.buylast.setItem(row_count - 1, 3, QTableWidgetItem(str(D_R)))
 
 
 if __name__=='__main__':             # import된 것들을 실행시키지 않고 __main__에서 실행하는 것만 실행 시킨다.
