@@ -48,7 +48,15 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         self.k.kiwoom.OnReceiveTrData.connect(self.trdata_slot)         # 키움서버 데이터 받는 곳
         self.additemlast.clicked.connect(self.searchItem2)              # 종목 추가
         # self.searchItem2 -> 자동매매 종목 선정 함수
+        self.Deletcode.clicked.connect(self.deletcode)                # 종목 삭제
         ####################
+
+    def deletcode(self):
+        x = self.buylast.selectedIndexes()              # 리스트로 선택된 행번호와 열번호가 x에 입력됨.
+        if not x:
+            print("\n 삭제할 종목을 선택하지 않았습니다. \n 삭제할 종목을 선택해주세요")
+            return
+        self.buylast.removeRow(x[0].row())              # 특정 행 선택 + 삭제
 
     def searchItem2(self):              # 종목추가시 사용됨
         # ------------------------------------------------------------------------
