@@ -1,3 +1,4 @@
+import os                                       # 현재 디렉토리 확인 가능
 import sys                                      # system specific parameters and functions : 파이썬 스크립트 관리
 from PyQt5.QtWidgets import *                   # GUI의 그래픽적 요소를 제어
 from PyQt5 import uic                           # ui 파일을 가져오기위한 함수
@@ -50,6 +51,26 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         # self.searchItem2 -> 자동매매 종목 선정 함수
         self.Deletcode.clicked.connect(self.deletcode)                # 종목 삭제
         ####################
+
+        #################### 부가기능 2 : 데이터베이스화 하기, 저장, 삭제, 불러오기
+        self.Getanal_code = []                                      # 불러온 파일 저장
+        self.Save_Stock.clicked.connect(self.Save_selected_code)    # 종목 저장
+        self.Del_Stock.clicked.connect(self.delet_code)             # 종목 삭제
+        self.Load_Stock.clicked.connect(self.Load_code)             # 종목 불러오기
+        ####################
+
+    def Save_selected_code(self):
+
+        for row in range(self.buylast.rowCount()):
+
+            code_n = self.buylast.item(row, 0).text()           # 코드번호
+            name = self.buylast.item(row, 1).text().strip()     # 종목 이름
+            price = self.buylast.item(row, 2).text()            # 현재가
+            dept = self.buylast.item(row, 3).text()             # 신용비율
+
+            f = open("dist/Selected_code.txt", "a", enoding="utf8")         # "a" : 달아 쓴다. "w" : 덮어 쓴다. files라는 파이썬 패키지 볼더를 만든다.
+            f.write("%s\t%s\t%s\t%s\n" % (code_n, name, price, dept))
+            f.close()
 
     def deletcode(self):
         x = self.buylast.selectedIndexes()              # 리스트로 선택된 행번호와 열번호가 x에 입력됨.
