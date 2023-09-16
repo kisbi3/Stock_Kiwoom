@@ -68,9 +68,14 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
             price = self.buylast.item(row, 2).text()            # 현재가
             dept = self.buylast.item(row, 3).text()             # 신용비율
 
-            f = open("dist/Selected_code.txt", "a", enoding="utf8")         # "a" : 달아 쓴다. "w" : 덮어 쓴다. files라는 파이썬 패키지 볼더를 만든다.
+            f = open("dist/Selected_code.txt", "w", encoding="utf8")         # "a" : 달아 쓴다. "w" : 덮어 쓴다. files라는 파이썬 패키지 볼더를 만든다.
             f.write("%s\t%s\t%s\t%s\n" % (code_n, name, price, dept))
             f.close()
+
+    def delet_code(self):
+
+        if os.path.exists("dist/Selected_code.txt"):
+            os.remove("dist/Selected_code.txt")
 
     def Load_code(self):
 
@@ -101,9 +106,9 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
 
         for index in range(rowCount):
             self.buylast.setItem(index, 0, QTableWidgetItem(str(self.Getanal_code[index][0])))
-            self.buylast.setItem(index, 0, QTableWidgetItem(str(self.Getanal_code[index][1])))
-            self.buylast.setItem(index, 0, QTableWidgetItem(str(self.Getanal_code[index][2])))
-            self.buylast.setItem(index, 0, QTableWidgetItem(str(self.Getanal_code[index][3])))
+            self.buylast.setItem(index, 1, QTableWidgetItem(str(self.Getanal_code[index][1])))
+            self.buylast.setItem(index, 2, QTableWidgetItem(str(self.Getanal_code[index][2])))
+            self.buylast.setItem(index, 3, QTableWidgetItem(str(self.Getanal_code[index][3])))
 
     def deletcode(self):
         x = self.buylast.selectedIndexes()              # 리스트로 선택된 행번호와 열번호가 x에 입력됨.
