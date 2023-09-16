@@ -72,6 +72,39 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
             f.write("%s\t%s\t%s\t%s\n" % (code_n, name, price, dept))
             f.close()
 
+    def Load_code(self):
+
+        if os.path.exists("dist/Selected_code.txt"):
+            f = open("dist/Selected_code.txt", "r", encoding = "utf8")
+            lines = f.readlines()                       # 여러 종목이 저장되어 있다면 모든 항목을 가져온다.
+            
+            for line in lines:
+                if line != "":
+                    ls = line.split("\t")
+                    t_code = ls[0]
+                    t_name = ls[1]
+                    curren_price = ls[2]
+                    dept = ls[3].split("\n")[0]
+
+                    self.Getanal_code.append([t_code, t_name, curren_price, dept])
+            
+            f.close()
+        
+        column_head = ["종목코드", "종목명", "현재가", "신용비율"]
+        colCount = len(column_head)
+        rowCount = len(self.Getanal_code)
+
+        self.buylast.setColumnCount(colCount)
+        self.buylast.setRowCount(rowCount)
+        self.buylast.setHorizontalHeaderLabels(column_head)
+        self.buylast.setSelectionMode(QAbstractItemView.SingleSelection)
+
+        for index in range(rowCount):
+            self.buylast.setItem(index, 0, QTableWidgetItem(str(self.Getanal_code[index][0])))
+            self.buylast.setItem(index, 0, QTableWidgetItem(str(self.Getanal_code[index][1])))
+            self.buylast.setItem(index, 0, QTableWidgetItem(str(self.Getanal_code[index][2])))
+            self.buylast.setItem(index, 0, QTableWidgetItem(str(self.Getanal_code[index][3])))
+
     def deletcode(self):
         x = self.buylast.selectedIndexes()              # 리스트로 선택된 행번호와 열번호가 x에 입력됨.
         if not x:
