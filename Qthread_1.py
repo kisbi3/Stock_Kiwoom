@@ -77,17 +77,17 @@ class Thread1(QThread):
 
             #################################### 텍스트 라벨에 집어 넣기
             
-            self.parent.label_2.setText(str(totalBuyingPrice))
-            self.parent.label_4.setText(str(currentTotalPrice))
-            self.parent.label_6.setText(str(balanceAsset))
-            self.parent.label_8.setText(str(totalEstimateProfit))
-            self.parent.label_10.setText(str(total_profit_loss_rate))
+            self.parent.label_2.setText(str(format(totalBuyingPrice, ",")))
+            self.parent.label_4.setText(str(format(currentTotalPrice, ",")))
+            self.parent.label_6.setText(str(format(balanceAsset, ",")))
+            self.parent.label_8.setText(str(format(totalEstimateProfit, ",")))
+            self.parent.label_10.setText(str(format(total_profit_loss_rate, ",")))
             
             #################################################################
 
             for index in range(rowCount):
                 itemCode = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "종목번호").strip(" ").strip("A")
-                itemName = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "종목명")
+                itemName = self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "종목명").strip(" ")
                 amount = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "보유수량"))
                 buyingPrice = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "매입가"))
                 currentPrice = int(self.k.kiwoom.dynamicCall("GetCommData(QString, QString, int, QString)", sTrCode, sRQName, index, "현재가"))
@@ -113,11 +113,23 @@ class Thread1(QThread):
 
                 self.parent.stocklistTableWidget_2.setItem(index, 0, QTableWidgetItem(str(itemCode)))
                 self.parent.stocklistTableWidget_2.setItem(index, 1, QTableWidgetItem(str(itemName)))
-                self.parent.stocklistTableWidget_2.setItem(index, 2, QTableWidgetItem(str(amount)))
-                self.parent.stocklistTableWidget_2.setItem(index, 3, QTableWidgetItem(str(buyingPrice)))
-                self.parent.stocklistTableWidget_2.setItem(index, 4, QTableWidgetItem(str(currentPrice)))
-                self.parent.stocklistTableWidget_2.setItem(index, 5, QTableWidgetItem(str(estimateProfit)))
-                self.parent.stocklistTableWidget_2.setItem(index, 6, QTableWidgetItem(str(profitRate)))
+                # 천단위 구분 콤마 사용
+                self.parent.stocklistTableWidget_2.setItem(index, 2, QTableWidgetItem(str(format(amount, ","))))
+                self.parent.stocklistTableWidget_2.setItem(index, 3, QTableWidgetItem(str(format(buyingPrice, ","))))
+                self.parent.stocklistTableWidget_2.setItem(index, 4, QTableWidgetItem(str(format(currentPrice, ","))))
+                self.parent.stocklistTableWidget_2.setItem(index, 5, QTableWidgetItem(str(format(estimateProfit, ","))))
+                self.parent.stocklistTableWidget_2.setItem(index, 6, QTableWidgetItem(str(format(profitRate, ","))))
+                ############# 좌측 정렬을 우측 정렬로 교체 + 수직 가운데 정렬
+                self.parent.stocklistTableWidget_2.item(index, 0).setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                self.parent.stocklistTableWidget_2.item(index, 1).setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                self.parent.stocklistTableWidget_2.item(index, 2).setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                self.parent.stocklistTableWidget_2.item(index, 3).setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                self.parent.stocklistTableWidget_2.item(index, 4).setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                self.parent.stocklistTableWidget_2.item(index, 5).setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                self.parent.stocklistTableWidget_2.item(index, 6).setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+
+            self.parent.stocklistTableWidget_2.resizeColumnsToContents()
+            self.parent.stocklistTableWidget_2.resizeRowsToContents()
             
             # sPrevNext == 2 --> 조회할 값이 남아 있는 것
             # sPrevNext == 0 --> 더 이상 조회할 값이 없는 것

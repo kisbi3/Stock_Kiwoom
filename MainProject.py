@@ -30,6 +30,19 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         self.label_7.setText(str("총평가손익금액"))
         self.label_9.setText(str("총수익률(%)"))
 
+        ############ 종목 추가 하기 우측 정렬
+        self.searchItemTextEdit2.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
+
+        ############ 더블 스핀 박스 우측정렬 및 소수점 삭제
+        self.buy_price.setAlignment(Qt.AlignRight)
+        self.buy_price.setDecimals(0)
+        self.n_o_stock.setAlignment(Qt.AlignRight)
+        self.n_o_stock.setDecimals(0)
+        self.profit_price.setAlignment(Qt.AlignRight)
+        self.profit_price.setDecimals(0)
+        self.loss_price.setAlignment(Qt.AlignRight)
+        self.loss_price.setDecimals(0)
+
         # 기타 함수
         self.login_event_loop = QEventLoop()                 # 이때 QEventLoop()는 block 기능을 가지고 있다.
                                                             # 특정 명령이 완료될 때까지 다음 코드들이 실행되는 것을 막아주는 함수
@@ -151,10 +164,10 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
 
         self.buylast.setItem(row_count, 0, QTableWidgetItem(str(self.new_code)))        # 실제 입력값은 1행부터이나 0부터 들어가야 한다.
         self.buylast.setItem(row_count, 1, QTableWidgetItem(str(itemName)))
-        self.buylast.setItem(row_count, 4, QTableWidgetItem(str(self.buy_price.toPlainText())))
-        self.buylast.setItem(row_count, 5, QTableWidgetItem(str(self.n_o_stock.toPlainText())))
-        self.buylast.setItem(row_count, 6, QTableWidgetItem(str(self.profit_price.toPlainText())))
-        self.buylast.setItem(row_count, 7, QTableWidgetItem(str(self.loss_price.toPlainText())))
+        self.buylast.setItem(row_count, 4, QTableWidgetItem(str(self.buy_price.value())))
+        self.buylast.setItem(row_count, 5, QTableWidgetItem(str(self.n_o_stock.value())))
+        self.buylast.setItem(row_count, 6, QTableWidgetItem(str(self.profit_price.value())))
+        self.buylast.setItem(row_count, 7, QTableWidgetItem(str(self.loss_price.value())))
         # ------------------------------------------------------------------------
         # getItemInfo 함수를 만들어서 종목 현재가와 신용비율을 가져오려고 함.
         self.getItemInfo(self.new_code)
