@@ -6,8 +6,9 @@ from PyQt5.QtCore import *                      # eventloop/스레드를 사용 
 
 #### 부가 기능 수행(일꾼) ####
 from kiwoom import Kiwoom           # 키움증권 함수/공용 방 (Singleton)
-from Qthread_1 import Thread1
+from Qthread_1 import Thread1       # 계좌평가잔고내역 가져오기
 from Qthread_2 import Thread2       # 계좌 관리
+from Qthread_3 import Thread3       # 자동매매 시작
 
 #---------- 프로그램 실행 ----------#
 
@@ -57,6 +58,7 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         # -> MainWindows.ui에서 '계좌평가잔고내역 확인'버튼을 클릭하면 함수 'c_acc' 실행
         self.acc_manage.clicked.connect(self.a_manage)      # 계좌정보 가져오기
         # -> MainWindows.ui에서 '계좌 관리'버튼을 클릭하면 함수 'a_manage' 실행
+        self.Auto_start.clicked.connect(self.auto)          # 자동매매 시작
 
         #################### 부가기능 1 : 종목선택하기, 새로운 종목 추가 및 삭제
         self.k.kiwoom.OnReceiveTrData.connect(self.trdata_slot)         # 키움서버 데이터 받는 곳
@@ -221,6 +223,11 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         ## 2번 일꾼 실행
         h2 = Thread2(self)
         h2.start()
+
+    def auto(self):
+        print("자동매매 시작")
+        h3 = Thread3(self)
+        h3.start()
     
     def trdata_slot(self, sScrNo, sRQName, sTrCode, sRecordName, sPrevNext):
         if sTrCode == "opt10001":
