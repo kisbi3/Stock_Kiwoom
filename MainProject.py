@@ -67,9 +67,13 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
             name = self.buylast.item(row, 1).text().strip()     # 종목 이름
             price = self.buylast.item(row, 2).text()            # 현재가
             dept = self.buylast.item(row, 3).text()             # 신용비율
+            mesu = self.buylast.item(row,4).text()
+            n_o_stock = self.buylast.item(row,4).text()
+            profit = self.buylast.item(row,4).text()
+            loss = self.buylast.item(row,4).text()
 
             f = open("dist/Selected_code.txt", "w", encoding="utf8")         # "a" : 달아 쓴다. "w" : 덮어 쓴다. files라는 파이썬 패키지 볼더를 만든다.
-            f.write("%s\t%s\t%s\t%s\n" % (code_n, name, price, dept))
+            f.write("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (code_n, name, price, dept, mesu, n_o_stock, profit, loss))
             f.close()
 
     def delet_code(self):
@@ -89,13 +93,17 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
                     t_code = ls[0]
                     t_name = ls[1]
                     curren_price = ls[2]
-                    dept = ls[3].split("\n")[0]
+                    dept = ls[3]
+                    mesu = ls[4]
+                    n_o_stock = ls[5]
+                    profit =ls[6]
+                    loss = ls[7].split("\n")[0]
 
-                    self.Getanal_code.append([t_code, t_name, curren_price, dept])
+                    self.Getanal_code.append([t_code, t_name, curren_price, dept, mesu, n_o_stock, profit, loss])
             
             f.close()
         
-        column_head = ["종목코드", "종목명", "현재가", "신용비율"]
+        column_head = ["종목코드", "종목명", "현재가", "신용비율", "매수가", "매수수량", "익절가", "손절가"]
         colCount = len(column_head)
         rowCount = len(self.Getanal_code)
 
@@ -109,6 +117,10 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
             self.buylast.setItem(index, 1, QTableWidgetItem(str(self.Getanal_code[index][1])))
             self.buylast.setItem(index, 2, QTableWidgetItem(str(self.Getanal_code[index][2])))
             self.buylast.setItem(index, 3, QTableWidgetItem(str(self.Getanal_code[index][3])))
+            self.buylast.setItem(index, 4, QTableWidgetItem(str(self.Getanal_code[index][4])))
+            self.buylast.setItem(index, 5, QTableWidgetItem(str(self.Getanal_code[index][5])))
+            self.buylast.setItem(index, 6, QTableWidgetItem(str(self.Getanal_code[index][6])))
+            self.buylast.setItem(index, 7, QTableWidgetItem(str(self.Getanal_code[index][7])))
 
     def deletcode(self):
         x = self.buylast.selectedIndexes()              # 리스트로 선택된 행번호와 열번호가 x에 입력됨.
@@ -129,7 +141,7 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
                     self.new_code = code        # 입력한 종목명의 코드번호 넣기
         # ------------------------------------------------------------------------
         # 종목코드번호와 종목명을 Table Widget에 입력하기
-        column_head = ["종목코드", "종목명", "현재가", "신용비율"]
+        column_head = ["종목코드", "종목명", "현재가", "신용비율", "매수가", "매수수량", "익절가", "손절가"]
         colCount= len(column_head)
         row_count = self.buylast.rowCount()
 
@@ -139,6 +151,10 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
 
         self.buylast.setItem(row_count, 0, QTableWidgetItem(str(self.new_code)))        # 실제 입력값은 1행부터이나 0부터 들어가야 한다.
         self.buylast.setItem(row_count, 1, QTableWidgetItem(str(itemName)))
+        self.buylast.setItem(row_count, 4, QTableWidgetItem(str(self.buy_price.toPlainText())))
+        self.buylast.setItem(row_count, 5, QTableWidgetItem(str(self.n_o_stock.toPlainText())))
+        self.buylast.setItem(row_count, 6, QTableWidgetItem(str(self.profit_price.toPlainText())))
+        self.buylast.setItem(row_count, 7, QTableWidgetItem(str(self.loss_price.toPlainText())))
         # ------------------------------------------------------------------------
         # getItemInfo 함수를 만들어서 종목 현재가와 신용비율을 가져오려고 함.
         self.getItemInfo(self.new_code)
