@@ -20,7 +20,23 @@ class Thread3(QThread):
         # 계좌번호 가져오는 부분은 Qthread_3 분리시 로그인 후 계좌번호를 가져오는 함수로 교체된다.
         # 각 Thread는 통신을 하지 못함 -> GUI에 입력된 계좌번호를 가져와야 함
 
+        ############ 매수관련 변수
         self.Load_code()
+
+        ############ 주문 전송 시 필요한 FID 번호
+        self.realType = RealType()      # 실시간 FID 번호 모아두는 곳
+
+        ############################################################
+        ###### 등록된 계좌 전체 해제하기(작동 정지 되었을 때 등록 정보를 끊어야 함.)
+        self.k.kiwoom.dynamicCall("SetRealRemove(QString, QString)", ["ALL", "ALL"])
+        ############################################################
+
+        self.screen_num = 5000
+        for code in self.k.portfolio_stock_dict.keys():
+            fids = self.realType.REALTYPE['주식체결']['체결시간']
+            self.k.kiwoom.dynamicCall("SetRealReg(QString, QString, QString, QString)", self.screen_num, code, fids, "1")
+            # 하나만 요청해도 기타 정보인 "현재가", "거래량" 등의 20가지가 넘은 다양한 데이터를 넘겨줌.
+            self.screen_num += 1
     
     def Load_code(self):
 
