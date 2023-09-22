@@ -21,7 +21,8 @@ class Thread3(QThread):
         # 각 Thread는 통신을 하지 못함 -> GUI에 입력된 계좌번호를 가져와야 함
 
         ############ 매수관련 변수
-        self.Load_code()
+        self.Load_code()                # 매수 종목/금액/수량 가져오기
+        self.orderitmelist_1 = []       # 중복 매수를 금지하기 위해 매수한 것들 모아두는 리스트
 
         ############ 주문 전송 시 필요한 FID 번호
         self.realType = RealType()      # 실시간 FID 번호 모아두는 곳
@@ -137,6 +138,55 @@ class Thread3(QThread):
             self.k.portfolio_stock_dict[sCode].update({"시가": j})
             self.k.portfolio_stock_dict[sCode].update({"저가": k})
             self.k.portfolio_stock_dict[sCode].update({"거래회전율": l})
+
+            #1. 매수 알고리즘 가동
+
+            #1차#############################################################################################
+            # 현재 가격이 매수가격보다 같거나 낮은 구간에서 아래 조건문이 실행
+            if self.k.portfolio_stock_dict[sCode]["현재가"] <= self.k.portfolio_stock_dict[sCode]["매수가"]:
+                # 중복매수 방지 코드 1
+                # 중복매수를 막기 위해 self.orderitmelist_1 리스트에 종목이 있는지 확인하기
+                if sCode not in self.orderitmelist_1:    
+                    # 중복매수 방지 코드 2
+                    # wa 리스트에 sCode를 넣어서, 만약 wa의 길이가 2 이상일 경우 종목 체결 금지
+                    wa = []
+                    wa.append(sCode)
+                    if len(wa) > 1:
+                        wa.clear()
+                        pass
+                    else:
+                        print("매수 시작 %s" % sCode)
+
+                        self.orderitmelist_1.append(sCode)  # 이 기법을 더이상 사용하지 못하게 하기 (중복매수 방지 코드 1)
+                        ''' [SendOrder() 함수 설명]
+                        SendOrder(
+                        BSTR sRQName, // 사용자 구분명
+                        BSTR sScreenNo, // 화면번호
+                        BSTR sAccNo,  // 계좌번호 10자리
+                        LONG nOrderType,  // 주문유형 1:신규매수, 2:신규매도 3:매수취소, 4:매도취소, 5:매수정정, 6:매도정정
+                        BSTR sCode, // 종목코드 (6자리)
+                        LONG nQty,  // 주문수량
+                        LONG nPrice, // 주문가격
+                        BSTR sHogaGb,   // 거래구분(혹은 호가구분)은 아래 참고
+                        BSTR sOrgOrderNo  // 원주문번호. 신규주문에는 공백 입력, 정정/취소시 입력합니다.
+                        )
+                        '''
+                        order_success1 = self.k.kiwoom.dynamicCall("SendOrder(QString, QString, QString ,int, QString, int, int, QString, QString)",
+                                                                   ["신규매수", self.k.portfolio_stock_dict[sCode]['주문용스크린번호'], self.account_num, 1, sCode,
+                                                                    self.k.portfolio_stock_dict[sCode]["매수수량"], self.k.portfolio_stock_dict[sCode]["현재가"],
+                                                                    self.realType.SENDTYPE['거래구분']['지정가'], ""])
+                        # 시장가로 매수하길 원한다면... "현재가" --> "최우선 매도호가" 등
+
+                        # 매수/매도 현황 데이터베이스화 : 종목명, 체결시간
+                        wf2 = open("dist/mesu_database.txt", "a", encoding="utf8")  # "a" 달아 쓴다. "w" 덮어 쓴다. files라느 파이썬 페키지 볼더를 만든다.
+                        wf2.write("%s\t%s\t%s\t%s\n" % ("1매수정보", self.k.portfolio_stock_dict[sCode]["종목명"], b, self.k.portfolio_stock_dict[sCode]["채결시간"]))  # t는 tap을 의미한다.
+                        wf2.close()
+
+                        # 주문 상태 확인
+                        if order_success1 == 0:
+                            print("최우선매수호가로 주문 전달 성공")
+                        else:
+                            print("최우선매수호가로 주문 전달 실패")
 
     def Load_code(self):
 
