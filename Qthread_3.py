@@ -27,7 +27,7 @@ class Thread3(QThread):
         self.realType = RealType()      # 실시간 FID 번호 모아두는 곳
 
         ############################################################
-        ###### 등록된 계좌 전체 해제하기(작동 정지 되었을 때 등록 정보를 끊어야 함.)
+        ###### 등록된 계좌 체 해제하기(작동 정지 되었을 때 등록 정보를 끊어야 함.)
         self.k.kiwoom.dynamicCall("SetRealRemove(QString, QString)", ["ALL", "ALL"])
         ############################################################
 
@@ -37,6 +37,18 @@ class Thread3(QThread):
             self.k.kiwoom.dynamicCall("SetRealReg(QString, QString, QString, QString)", self.screen_num, code, fids, "1")
             # 하나만 요청해도 기타 정보인 "현재가", "거래량" 등의 20가지가 넘은 다양한 데이터를 넘겨줌.
             self.screen_num += 1
+
+        # print("실시간 등록  : %s, 스크린번호 : %s, FID 번호 : %s" %(code, screen_num, fids))
+        print("종목등록 완료")
+        print(self.k.portfolio_stock_dict.keys())
+
+        ######################################################################
+        ###### 현재 장 상태 알아보기 (장 시작 / 장 마감 등)
+        self.screen_start_stop_real = "300"       # 장시 시작 전/후 상태 확인용 스크린 번호
+        self.k.kiwoom.dynamicCall("SetRealReg(QString, QString, QString, QString)", self.screen_start_stop_real, '', self.realType.REALTYPE['장시작시간']['장운영구분'], "0")  # 장의 시작인지, 장 외인지등에 대한 정보 수신, 연속 조회가 필요 없음 : 0
+
+        ###### 실시간 슬롯 (데이터를 받아오는 슬롯을 설정한다)
+        self.k.kiwoom.OnReceiveRealData.connect(self.realdata_slot)   # 실시간 데이터를 받아오는 곳
     
     def Load_code(self):
 
