@@ -23,5 +23,10 @@ class Kiwoom(QWidget, metaclass=Singleton):       # QMainWindow : PyQt5에서 �
 
         self.today_meme = []                # 금일 매매하는 종목이 들어감
         self.not_account_stock_dist ={}     # 미체결 잔고
-        
+
+        ################ 오늘 산 잔고
+
+        self.jango_dict = {}
+        self.buy_jogon = {}                 # 미체결 잔고
+
         
