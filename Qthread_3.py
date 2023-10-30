@@ -3,6 +3,7 @@ import os
 from PyQt5.QtCore import *              # 쓰레드 함수 불러오기
 from kiwoom import Kiwoom               # 로그인을 위한 클래스
 from kiwoomType import *                # 실시간 정보를 받아오기 위해 반드시 필요한 FID번호를 저장한 곳.
+from PyQt5.QtWidgets import *           #PyQt import
 
 class Thread3(QThread):
     def __ini__(self, parent):          # 부모의 윈도우 창을 가져올 수 있게 하기
@@ -475,3 +476,46 @@ class Thread3(QThread):
                 self.parent.not_account.setItem(index, 6, QTableWidgetItem(str(format(not_chegual_quan, ","))))
 
             print("미체결잔고 종목 추가 %s 수량 %s" % (self.k.not_account_stock_dict[order_number]["종목명"], self.k.not_account_stock_dict[order_number]["미체결수량"]))
+
+        # sGubun == 1 : 체결
+        # sGubun == 0 : 미체결
+        elif int(sGubun) == 1:
+            account_num = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['계좌번호'])   # 계좌번호에 대한 FID번호
+            sCode = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['종목코드'])[1:]  # [A203042]
+            stock_name = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['종목명'])
+            stock_name = stock_name.strip()  # 혹시라도 공백이 있을 까봐
+            current_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['현재가'])  # 원주문번호가 없으면 0000000이다
+            current_price = abs(int(current_price))
+            stock_quan = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['보유수량'])
+            stock_quan = int(stock_quan)
+            like_quan = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['주문가능수량'])
+            like_quan = int(like_quan)
+            buy_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['매입단가'])
+            buy_price = abs(int(buy_price))
+            total_buy_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['총매입가'])
+            total_buy_price = int(total_buy_price)
+            meme_gubun = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['매도매수구분'])
+            meme_gubun = self.realType.REALTYPE['매도수구분'][meme_gubun]
+            first_sell_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['(최우선)매도호가'])
+            first_sell_price = int(first_sell_price)
+            first_buy_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['(최우선)매수호가'])
+            first_buy_price = int(first_buy_price)
+            first_buy_price1 = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['잔고']['예수금'])
+            first_buy_price1 = int(first_buy_price1)
+            ##### 계좌평가 잔고내역의 종목이 매도되었을 경우 jango_dict에는 존재하지 않기 때문에
+            if sCode not in self.k.jango_dict.keys():
+                self.k.jango_dict.update({sCode: {}})
+            self.k.jango_dict[sCode].update({"현재가": current_price})
+            self.k.jango_dict[sCode].update({"종목코드": sCode})
+            self.k.jango_dict[sCode].update({"종목명": stock_name})
+            self.k.jango_dict[sCode].update({"보유수량": stock_quan})
+            self.k.jango_dict[sCode].update({"주문가능수량": like_quan})
+            self.k.jango_dict[sCode].update({"매입단가": buy_price})
+            self.k.jango_dict[sCode].update({"총매입가": total_buy_price})
+            self.k.jango_dict[sCode].update({"매도매수구분": meme_gubun})
+            self.k.jango_dict[sCode].update({"(최우선)매도호가": first_sell_price})
+            self.k.jango_dict[sCode].update({"(최우선)매수호가": first_buy_price})
+            # 보유 수량 == 0 -> acc_portfolio에서 삭제
+            if sCode in self.k.acc_portfolio.keys() and stock_quan == 0:
+                del self.k.acc_portfolio[sCode]
+                #self.k.acc_portfolio[sCode]['매매가능수량'] = 0
