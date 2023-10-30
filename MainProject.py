@@ -44,6 +44,30 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         self.loss_price.setAlignment(Qt.AlignRight)
         self.loss_price.setDecimals(0)
 
+        ### 초기 셋팅 : 분할 매수/매도
+        '''
+        self.textEdit_1.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_2.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_3.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_4.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_5.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_6.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_7.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_8.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_9.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_10.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_11.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_12.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_13.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_14.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_15.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_16.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_17.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_18.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_19.setPlainText("0")      # 초기 매수 금액
+        self.textEdit_20.setPlainText("0")      # 초기 매수 금액
+        '''
+
         # 기타 함수
         self.login_event_loop = QEventLoop()                 # 이때 QEventLoop()는 block 기능을 가지고 있다.
                                                             # 특정 명령이 완료될 때까지 다음 코드들이 실행되는 것을 막아주는 함수
@@ -166,10 +190,10 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
 
         self.buylast.setItem(row_count, 0, QTableWidgetItem(str(self.new_code)))        # 실제 입력값은 1행부터이나 0부터 들어가야 한다.
         self.buylast.setItem(row_count, 1, QTableWidgetItem(str(itemName)))
-        self.buylast.setItem(row_count, 4, QTableWidgetItem(str(self.buy_price.value())))
-        self.buylast.setItem(row_count, 5, QTableWidgetItem(str(self.n_o_stock.value())))
-        self.buylast.setItem(row_count, 6, QTableWidgetItem(str(self.profit_price.value())))
-        self.buylast.setItem(row_count, 7, QTableWidgetItem(str(self.loss_price.value())))
+        self.buylast.setItem(row_count, 4, QTableWidgetItem(str(self.buy_price.toPlainText())))
+        self.buylast.setItem(row_count, 5, QTableWidgetItem(str(self.n_o_stock.toPlainText())))
+        self.buylast.setItem(row_count, 6, QTableWidgetItem(str(self.profit_price.toPlainText())))
+        self.buylast.setItem(row_count, 7, QTableWidgetItem(str(self.loss_price.toPlainText())))
         # ------------------------------------------------------------------------
         # getItemInfo 함수를 만들어서 종목 현재가와 신용비율을 가져오려고 함.
         self.getItemInfo(self.new_code)

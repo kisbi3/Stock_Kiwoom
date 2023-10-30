@@ -446,7 +446,7 @@
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
     </property>
-    <widget class="QPushButton" name="Auto__start">
+    <widget class="QPushButton" name="Auto_start">
      <property name="geometry">
       <rect>
        <x>50</x>
