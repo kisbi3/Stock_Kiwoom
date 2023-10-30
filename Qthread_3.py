@@ -10,7 +10,7 @@ class Thread3(QThread):
         self.parent = parent            # 부모의 윈도우를 사용하기 위한 조건
 
 
-        ############ 키뭉서버 함수를 사용하기 위해 kiwoom의 능력 상속받기
+        ############ 키움서버 함수를 사용하기 위해 kiwoom의 능력 상속받기
         self.k = Kiwoom()
         ############
 
@@ -280,3 +280,48 @@ class Thread3(QThread):
             f.close()
 
 
+    def chejan_slot(self, sGubun, nItemCnt, sFIdList):   # 주문전송 후 주문접수, 체결통보, 잔고통보를 수신
+
+        if sGubun == "0":
+            print("매수/매도 중입니다. 미체결 잔고 업데이트")
+        else:
+            print("미체결잔고 해결로 실제 잔고 업데이트")
+
+        if int(sGubun) == 0:   # 주문전송 후 미체결 되었을 때 아래와 같은 연산을 해 준다.
+            account_num = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['계좌번호'])
+            sCode = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['종목코드'])[1:]  # [A203042]  -->  [1:] => [203042]
+            stock_name = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['종목명'])
+            stock_name = stock_name.strip()  # 혹시라도 공백이 있을 까봐
+            origin_order_number = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['원주문번호'])  # 원주문번호가 없으면 0000000이다
+            order_number = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['주문번호'])
+            order_status = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['주문상태'])  # 접수/확인/체결 정보
+            order_quan = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['주문수량'])
+            order_quan = int(order_quan)
+            order_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['주문가격'])
+            order_price = int(order_price)
+            not_chegual_quan = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['미체결수량'])
+            not_chegual_quan = int(not_chegual_quan)
+            order_gubun = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['주문구분'])  # 정정 등, 부호가 나오기 때문에 잡아줘야 된다.
+            order_gubun = order_gubun.lstrip('+').lstrip('-')
+            order_gubun = order_gubun.strip()
+            chegual_time_str = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['주문/체결시간'])  # '151028'
+            chegual_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['체결가'])       # 체결 X인 경우 -> 공백으로 넘어옴
+
+            if chegual_price == '':
+                chegual_price = 0  # 숫자로 할당
+            else:
+                chegual_price = int(chegual_price)
+
+            chegual_quantity = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['체결량'])
+
+            if chegual_quantity == '':
+                chegual_quantity = 0
+            else:
+                chegual_quantity = int(chegual_quantity)
+
+            current_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['현재가'])
+            current_price = abs(int(current_price))
+            first_sell_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['(최우선)매도호가'])
+            first_sell_price = abs(int(first_sell_price))
+            first_buy_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['(최우선)매수호가'])
+            first_buy_price = abs(int(first_buy_price))
