@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>992</width>
+    <width>1119</width>
     <height>833</height>
    </rect>
   </property>
@@ -149,21 +149,11 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTableWidget" name="stocklistTableWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>140</y>
-      <width>511</width>
-      <height>201</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="acc_manage">
     <property name="geometry">
      <rect>
       <x>800</x>
-      <y>20</y>
+      <y>50</y>
       <width>121</width>
       <height>23</height>
      </rect>
@@ -176,7 +166,7 @@
     <property name="geometry">
      <rect>
       <x>550</x>
-      <y>50</y>
+      <y>80</y>
       <width>381</width>
       <height>291</height>
      </rect>
@@ -186,7 +176,7 @@
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>370</y>
+      <y>390</y>
       <width>521</width>
       <height>371</height>
      </rect>
@@ -258,7 +248,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>380</y>
+      <y>400</y>
       <width>111</width>
       <height>361</height>
      </rect>
@@ -470,13 +460,56 @@
      </property>
     </widget>
    </widget>
+   <widget class="QTabWidget" name="tabWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>130</y>
+      <width>511</width>
+      <height>241</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="tab_3">
+     <attribute name="title">
+      <string>계좌 내역</string>
+     </attribute>
+     <widget class="QTableWidget" name="stocklistTableWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>491</width>
+        <height>211</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_4">
+     <attribute name="title">
+      <string>미체결 잔고</string>
+     </attribute>
+     <widget class="QTableWidget" name="not_account">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>491</width>
+        <height>211</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>992</width>
+     <width>1119</width>
      <height>21</height>
     </rect>
    </property>

@@ -325,3 +325,43 @@ class Thread3(QThread):
             first_sell_price = abs(int(first_sell_price))
             first_buy_price = self.k.kiwoom.dynamicCall("GetChejanData(int)", self.realType.REALTYPE['주문체결']['(최우선)매수호가'])
             first_buy_price = abs(int(first_buy_price))
+
+
+
+            # 새로운 주문의 미체결 주문번호(order_number)가 미체결잔고에 없을 경우 아래와 같이 미체결 잔고를 업데이트 한다.
+            if order_number not in self.k.not_account_stock_dict.keys():
+                self.k.not_account_stock_dict.update({order_number: {}})
+
+            self.k.not_account_stock_dict[order_number].update({"종목코드": sCode})
+            self.k.not_account_stock_dict[order_number].update({"종목명": stock_name})
+            self.k.not_account_stock_dict[order_number].update({"주문번호": order_number})
+            self.k.not_account_stock_dict[order_number].update({"주문상태": order_status})
+            self.k.not_account_stock_dict[order_number].update({"주문수량": order_quan})
+            self.k.not_account_stock_dict[order_number].update({"주문가격": order_price})
+            self.k.not_account_stock_dict[order_number].update({"주문구분": order_gubun})
+            self.k.not_account_stock_dict[order_number].update({"미체결수량": not_chegual_quan})
+            self.k.not_account_stock_dict[order_number].update({"체결량": chegual_quantity})
+            self.k.not_account_stock_dict[order_number].update({"원주문번호": origin_order_number})
+            self.k.not_account_stock_dict[order_number].update({"주문/체결시간": chegual_time_str})
+            self.k.not_account_stock_dict[order_number].update({"체결가": chegual_price})
+            self.k.not_account_stock_dict[order_number].update({"현재가": current_price})
+            self.k.not_account_stock_dict[order_number].update({"(최우선)매도호가": first_sell_price})
+            self.k.not_account_stock_dict[order_number].update({"(최우선)매수호가": first_buy_price})
+
+            column_head = ["종목코드", "종목명", "주문번호", "주문상태", "주문수량", "주문가격", "미체결수량"]
+            colCount = len(column_head)
+            rowCount = (len(self.k.not_account_stock_dict))
+            self.parent.not_account.setColumnCount(colCount)                 # 행 갯수
+            self.parent.not_account.setRowCount(rowCount)                    # 열 갯수 (종목 수)
+            self.parent.not_account.setHorizontalHeaderLabels(column_head)   # 행의 이름 삽입
+
+            for index in range(rowCount):
+                self.parent.not_account.setItem(index, 0, QTableWidgetItem(str(sCode)))
+                self.parent.not_account.setItem(index, 1, QTableWidgetItem(str(stock_name)))
+                self.parent.not_account.setItem(index, 2, QTableWidgetItem(str(format(order_number))))
+                self.parent.not_account.setItem(index, 3, QTableWidgetItem(str(format(order_status))))
+                self.parent.not_account.setItem(index, 4, QTableWidgetItem(str(format(order_quan, ","))))
+                self.parent.not_account.setItem(index, 5, QTableWidgetItem(str(format(order_price, ","))))
+                self.parent.not_account.setItem(index, 6, QTableWidgetItem(str(format(not_chegual_quan, ","))))
+
+            print("미체결잔고 종목 추가 %s 수량 %s" % (self.k.not_account_stock_dict[order_number]["종목명"], self.k.not_account_stock_dict[order_number]["미체결수량"]))

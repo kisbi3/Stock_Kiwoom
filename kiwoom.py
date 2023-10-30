@@ -19,4 +19,9 @@ class Kiwoom(QWidget, metaclass=Singleton):       # QMainWindow : PyQt5에서 �
         ################ 전체 공유 데이터
         self.All_Stock_Code = {}            # {종목코드 : 종목명} 으로 되어있는 All_Stock_Code라는 딕셔너리 생성
         self.acc_portfolio = {}             # 계좌에 들어있는 종목의 코드, 수익률 등등 입력
+        self.portfolio_stock_dict = {}      # 매매에 관한 모든 종목(현재계좌 종목/금일 등록 종목)이 모두 들어간다.
+
+        self.today_meme = []                # 금일 매매하는 종목이 들어감
+        self.not_account_stock_dist ={}     # 미체결 잔고
+        
         
