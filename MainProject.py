@@ -10,7 +10,13 @@ from kiwoom import Kiwoom           # 키움증권 함수/공용 방 (Singleton)
 from Qthread_1 import Thread1       # 계좌평가잔고내역 가져오기
 from Qthread_2 import Thread2       # 계좌 관리
 from Qthread_3 import Thread3       # 자동매매 시작
-from Qthread_11 import Thread11
+# from Qthread_11 import Thread11
+from Qthread_5 import Thread5
+
+
+### 팝업창들 ###
+from News_all import secondwindow
+
 
 #---------- 프로그램 실행 ----------#
 
@@ -85,6 +91,8 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         self.acc_manage.clicked.connect(self.a_manage)      # 계좌정보 가져오기
         # -> MainWindows.ui에서 '계좌 관리'버튼을 클릭하면 함수 'a_manage' 실행
         self.Auto_start.clicked.connect(self.auto)          # 자동매매 시작
+
+        self.CRR.clicked.connect(self.Crolling)
 
         #################### 부가기능 1 : 종목선택하기, 새로운 종목 추가 및 삭제
         self.k.kiwoom.OnReceiveTrData.connect(self.trdata_slot)         # 키움서버 데이터 받는 곳
@@ -254,6 +262,15 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
         print("자동매매 시작")
         h3 = Thread3(self)
         h3.start()
+
+    def Crolling(self):
+        print("뉴스 가져오기")
+        self.second = secondwindow
+    
+    def check_ADR(self):
+        print("ADR 정보 가져오기")
+        h5 = Thread5(self)
+        h5.start
     
     def trdata_slot(self, sScrNo, sRQName, sTrCode, sRecordName, sPrevNext):
         if sTrCode == "opt10001":
@@ -272,6 +289,9 @@ class myFirstWindow(QtWidgets.QWidget):
         super(myFirstWindow, self).__init__()
 
         self.k = Kiwoom()
+
+        h5 = Thread5(self)
+        h5.start()
 
         self.resize(500, 50)    # 창 크기
         self.setWindowTitle('투자 가이드 라인')

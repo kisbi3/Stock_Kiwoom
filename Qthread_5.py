@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 
 
-class Thread11(QThread):
+class Thread5(QThread):
     def __init__(self, parent):         # 부모의 윈도우 창 가져오기
         super().__init__(parent)        # 부모의 윈도우 창 초기화
         self.parent = parent            # 부모의 윈도우를 사용하기 위한 조건
