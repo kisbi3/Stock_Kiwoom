@@ -12,8 +12,9 @@ class secondwindow(QMainWindow, QWidget, form_secondwindow):
     def __init__(self):
         super(secondwindow, self).__init__()
         self.initUi()
+        self.show()
 
-        self.check_ADR()
+        self.check_exchange_rate()
 
         self.pushButton.clicked.connect(self.btn_second_to_main)
 
@@ -23,8 +24,8 @@ class secondwindow(QMainWindow, QWidget, form_secondwindow):
     def btn_second_to_main(self):
         self.close()  # 클릭시 종료됨.
 
-    def check_ADR(self):
-        print("ADR 정보 가져오기")
+    def check_exchange_rate(self):
+        print("환율 가져오기")
         h4 = Thread4(self)
         h4.start()
 

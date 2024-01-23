@@ -265,7 +265,7 @@ class Login_Machnine(QMainWindow, QWidget, form_class):       # QMainWindow : Py
 
     def Crolling(self):
         print("뉴스 가져오기")
-        self.second = secondwindow
+        self.second = secondwindow()
     
     def check_ADR(self):
         print("ADR 정보 가져오기")
