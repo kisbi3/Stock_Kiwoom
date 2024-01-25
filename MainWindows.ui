@@ -198,7 +198,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QPushButton" name="Load_Stock">
+     <widget class="QPushButton" name="Save_Stock">
       <property name="geometry">
        <rect>
         <x>90</x>
@@ -208,10 +208,10 @@
        </rect>
       </property>
       <property name="text">
-       <string>불러오기</string>
+       <string>DB 저장</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="Save_Stock">
+     <widget class="QPushButton" name="Load_Stock">
       <property name="geometry">
        <rect>
         <x>190</x>
@@ -221,7 +221,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>종목 저장</string>
+       <string>DB 로드</string>
       </property>
      </widget>
      <widget class="QPushButton" name="Del_Stock">
@@ -234,7 +234,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>삭제</string>
+       <string>DB 삭제</string>
       </property>
      </widget>
     </widget>
@@ -463,13 +463,26 @@
      <property name="geometry">
       <rect>
        <x>50</x>
-       <y>60</y>
+       <y>20</y>
        <width>131</width>
-       <height>71</height>
+       <height>41</height>
       </rect>
      </property>
      <property name="text">
       <string>시황 파악하기</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="div_meme">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>70</y>
+       <width>131</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>분할 매수매도 하기</string>
      </property>
     </widget>
    </widget>
