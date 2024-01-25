@@ -6,25 +6,14 @@ from PyQt5 import uic             # ui 파일을 가져오기위한 함수
 from Qthread_4 import Thread4      # Qthread_4 에 크롤링을 위한 스레드
 ###################################################
 
-form_secondwindow = uic.loadUiType("NewsWindows.ui")[0]
+form_ThirdWindow = uic.loadUiType("DivisionLongShort.ui")[0]
 
-class secondwindow(QMainWindow, QWidget, form_secondwindow):
+class ThirdWindow(QMainWindow, QWidget, form_ThirdWindow):
     def __init__(self):
-        super(secondwindow, self).__init__()
+        super(ThirdWindow, self).__init__()
         self.initUi()
         self.show()
 
-        self.check_exchange_rate()
-
-        self.pushButton.clicked.connect(self.btn_second_to_main)
 
     def initUi(self):
         self.setupUi(self)
-
-    def btn_second_to_main(self):
-        self.close()  # 클릭시 종료됨.
-
-    def check_exchange_rate(self):
-        print("환율 가져오기")
-        h4 = Thread4(self)
-        h4.start()

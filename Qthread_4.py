@@ -23,6 +23,7 @@ class Thread4(QThread):
         a = value2[0].strip(',')  # 환율값
         dist = value2[1].split('(')
         c = dist[1].strip(')')      # 증가/하락 비율
+        c = '-1.00%'
         if c[0] == '+':
             b = '+' + dist[0]           # 증가/하락
         elif c[0] == '-':
@@ -41,14 +42,14 @@ class Thread4(QThread):
         self.parent.exchange_2.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
         self.parent.exchange_3.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
 
-        print(float(c[1:4]))
-        if "-" in c and float(c[1:5]) > 1:                   # 환율이 떨어지고, 떨어지는 폭이 1퍼센트 이상이면
+        percent = float(c[:-1])
+        if percent <= -1:                   # 환율이 떨어지고, 떨어지는 폭이 1퍼센트 이상이면
             self.parent.exchange_4.setPlainText(str(0.15))
-        if "-" in c and float(c[1:5]) < 1:                   # 환율이 떨어지고, 떨어지는 폭이 1퍼센트 이하이면
+        elif percent > -1 and percent < 0:                   # 환율이 떨어지고, 떨어지는 폭이 1퍼센트 이하이면
             self.parent.exchange_4.setPlainText(str(0.10))
-        elif "-" not in c and float(c[1:5]) < 1:                   # 환율이 올라가고, 올라가는 폭이 1퍼센트 이하이면
+        elif percent < 1 and percent > 0:                   # 환율이 올라가고, 올라가는 폭이 1퍼센트 이하이면
             self.parent.exchange_4.setPlainText(str(0.05))
-        elif "-" not in c and float(c[1:5]) > 1:                   # 환율이 올라가고, 올라가는 폭이 1퍼센트 이상이면
+        elif percent >= 1 :                   # 환율이 올라가고, 올라가는 폭이 1퍼센트 이상이면
             self.parent.exchange_4.setPlainText(str(0.01))
 
         self.parent.exchange_4.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
