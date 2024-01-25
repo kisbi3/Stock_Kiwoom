@@ -17,20 +17,19 @@ class Thread4(QThread):
 
         value = soup.find("div", {"class": "price_info"})
         value2 = value.text.split()
-        updown = 0
-        if value2[2] == '상승':     # 네이버 확인해봐야 함 이거 이상해요
-            print("전일대비 상승")
-            updown = -1
-        elif value2[2] == '하락':
-            print("전일대비 하락")
-            updown = 1
 
         del value2[1:3]
 
         a = value2[0].strip(',')  # 환율값
         dist = value2[1].split('(')
-        b = str(updown*float(dist[0]))                 # 증가/하락
         c = dist[1].strip(')')      # 증가/하락 비율
+        if c[0] == '+':
+            b = '+' + dist[0]           # 증가/하락
+        elif c[0] == '-':
+            b = '-' + dist[0]           # 증가/하락
+        else:
+            # 변동이 없을 경우.
+            b = dist[0]                 # 증가/하락
 
         print(a, b, c)
 
@@ -43,13 +42,13 @@ class Thread4(QThread):
         self.parent.exchange_3.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
 
         print(float(c[1:4]))
-        if "-" in c and float(c[1:5]) > 1:                   # 환률이 떨어지고, 떨어지는 폭이 1퍼센트 이상이면
+        if "-" in c and float(c[1:5]) > 1:                   # 환율이 떨어지고, 떨어지는 폭이 1퍼센트 이상이면
             self.parent.exchange_4.setPlainText(str(0.15))
-        if "-" in c and float(c[1:5]) < 1:                   # 환률이 떨어지고, 떨어지는 폭이 1퍼센트 이하이면
+        if "-" in c and float(c[1:5]) < 1:                   # 환율이 떨어지고, 떨어지는 폭이 1퍼센트 이하이면
             self.parent.exchange_4.setPlainText(str(0.10))
-        elif "-" not in c and float(c[1:5]) < 1:                   # 환률이 올라가고, 올라가는 폭이 1퍼센트 이하이면
+        elif "-" not in c and float(c[1:5]) < 1:                   # 환율이 올라가고, 올라가는 폭이 1퍼센트 이하이면
             self.parent.exchange_4.setPlainText(str(0.05))
-        elif "-" not in c and float(c[1:5]) > 1:                   # 환률이 올라가고, 올라가는 폭이 1퍼센트 이상이면
+        elif "-" not in c and float(c[1:5]) > 1:                   # 환율이 올라가고, 올라가는 폭이 1퍼센트 이상이면
             self.parent.exchange_4.setPlainText(str(0.01))
 
         self.parent.exchange_4.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
